@@ -20,7 +20,7 @@ class IndexView(View):
         s3 = session.client('s3')
 
         response = s3.create_bucket(
-            Bucket=request.POST.get('name'),
+            Bucket=request.POST.get('name').replace(" ", "-"),
             # CreateBucketConfiguration={
             #     'LocationConstraint': us-east-1'
             # }
