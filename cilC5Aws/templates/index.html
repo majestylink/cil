@@ -76,9 +76,13 @@
                 $('#create-bucket').removeClass('show')
                 $('.modal-backdrop.fade.show').removeClass('show')
                 $('.create-bucket-form').trigger('reset')
+                alert(response.message)
                 console.log(response.message);
             },
             error: response => {
+                $('#create-bucket').removeClass('show')
+                $('.modal-backdrop.fade.show').removeClass('show')
+                alert(response.message)
                 console.log('Error:', response);
             }
         });

@@ -19,21 +19,24 @@ class IndexView(View):
         session = boto3.Session(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
         s3 = session.client('s3')
 
-        response = s3.create_bucket(
-            Bucket=request.POST.get('name').lower().replace(" ", "-"),
-            # CreateBucketConfiguration={
-            #     'LocationConstraint': us-east-1'
-            # }
-        )
-
-        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-            send_mail(
-                'S3 Bucket Created',
-                'Your Bucket was created successfully!',
-                settings.FROM_EMAIL,
-                [request.POST.get('email')],
-                fail_silently=False,
+        try:
+            response = s3.create_bucket(
+                Bucket=request.POST.get('name').lower().replace(" ", "-"),
+                CreateBucketConfiguration={
+                    'LocationConstraint': 'us-east-2'
+                }
             )
-            return JsonResponse({'message': 'Your Bucket was created successfully!'})
 
-        return JsonResponse({'message': 'Error encountered'})
+            # TODO: Check if bucket already exist
+
+            if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+                send_mail(
+                    'S3 Bucket Created',
+                    'Your Bucket was created successfully!',
+                    settings.FROM_EMAIL,
+                    [request.POST.get('email')],
+                    fail_silently=False,
+                )
+                return JsonResponse({'message': 'Your Bucket was created successfully!'})
+        except:
+            return JsonResponse({'message': 'Error encountered'})
