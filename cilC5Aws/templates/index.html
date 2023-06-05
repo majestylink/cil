@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Title</title>
+
+    <style>
+        /* Custom CSS to center the button */
+        html, body {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Button to trigger the modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-bucket">
+        Create S3 Bucket
+    </button>
+
+
+
+<div class="modal fade" id="create-bucket" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <p id="link-error" class="alert-dismissable alert-dark-primary alert alert"></p>
+                <div class="modal-header">
+                    <h5 class="modal-title">Create AWS S3 Bucket</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="create-bucket-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="floating-label" for="Name">Bucket Name</label>
+                                    <input required type="text" name="name" class="form-control" id="Name" placeholder="Enter bucket name here">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="floating-label" for="Email">Email Address</label>
+                                    <input required type="text" name="email" class="form-control" id="Email" placeholder="Please enter your email address">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" aria-label="Close">Submit</button>
+                        <button class="btn btn-danger">Clear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Include Bootstrap JS (required for the modal functionality) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+<script>
+    $('.create-bucket-form').on("submit", function(event) {
+        event.preventDefault();
+        var data = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'src:index' %}",
+            data: data,
+            success: response => {
+                $('#create-bucket').removeClass('show')
+                $('.modal-backdrop.fade.show').removeClass('show')
+                $('.create-bucket-form').trigger('reset')
+                console.log(response.message);
+            },
+            error: response => {
+                console.log('Error:', response);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
