@@ -30,7 +30,7 @@ class IndexView(View):
             send_mail(
                 'S3 Bucket Created',
                 'Your Bucket was created successfully!',
-                'majestyempirebiz@gmail.com',
+                settings.FROM_EMAIL,
                 [request.POST.get('email')],
                 fail_silently=False,
             )
